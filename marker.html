@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            flex-direction: column;
+            text-align: center;
+            background-image: url('img/red.jpg');
+            font-size: 24px;
+            color:rgb(91, 85, 85);
+            font-weight: bold;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+        }
+
+        #color {
+            width: 300px;
+            height: 100px;
+        }
+
+        #text {
+            width: 300px;
+            height: 100px;
+            border: 2px solid grey;
+            border-radius: 8px;
+        }
+
+        #output {
+            width: 300px;
+            height: 140px;
+            background-color: white;
+            font-size: 46px !important;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            border: 5px double grey !important;
+            border-radius: 8px;
+        }
+
+        button {
+            margin-top: 5px;
+            background-color: pink;
+            border-radius: 8px;
+            border: 2px solid palevioletred;
+            height: 30px;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        #ink1{
+            font-size:16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="marker">
+        <div>
+            <label for="color">Выберите цвет маркера</label><br />
+        </div>
+        <button onclick="selectColor()">Выбрать этот цвет</button>
+        <div>
+            <div>
+                <input type="color" id="color" name="color" value="#000000" />
+            </div>
+
+            <label for="text">Введите текст</label><br />
+            <input type="text" id="text" name="text" />
+
+        </div>
+        <div class="btn">
+            <button onclick="printText()">Печать</button>
+            <button onclick="thisColor()">Печатать в этом цвете</button>
+
+            <button onclick="clearAll()">Сброс</button>
+        </div>
+        <div id="output" style="margin-top: 20px; border: 1px solid black; padding: 10px;"></div>
+    </div>
+    <div class="red">
+        <div id="ink1">Осталось чернил
+        <!-- <button onclick="updateInk()">Осталось чернил</button> -->
+        <span id="ink">100%</span></div>
+        <button onclick="fillMarker()">Заправить маркер</button>
+    </div>
+    <script>
+        "use strict";
+
+        function Marker(color, ink) {
+
+            this.color = color;
+            this.ink = ink;
+
+            this.print = function (text) {
+                let printedText = '';
+                for (let char of text) {
+                    if (char !== ' ') {
+                        printedText += char; //добавляем символ и
+                        this.ink -= 0.5; //уменьшаем чернила
+                    }
+                    else if (char = ' ') {
+                        printedText += char; // только добавляем символ
+                    }
+                    else {
+                        break;
+                    }
+                }
+                const output = document.getElementById('output');
+                output.innerHTML = `<span style="color:${this.color}">${printedText}</span>`
+                updateInk();
+            };
+            this.setColor = function (newColor) {
+                this.color = newColor;  //3 метода обьекта маркера отмечены this
+            };
+
+            this.getInk = function () {
+                return this.ink;
+            };
+        }
+
+
+        const marker = new Marker('#0000ff', 100);
+        function printText() {
+            const inputText = document.getElementById('text').value;
+            marker.print(inputText);
+        }
+        function selectColor() {
+            const colorInput = document.getElementById('color');
+            const thisColor = colorInput.value;
+            marker.setColor(thisColor);
+            alert(`Цвет маркера установлен на ${thisColor}`);
+        }
+        function thisColor() {
+            const inputText = document.getElementById('text').value;
+            const color = document.getElementById('color').value;
+            marker.setColor(color);
+            marker.print(inputText);
+        }
+        function clearAll() {
+            document.getElementById('text').value = '';
+            document.getElementById('output').innerHTML = '';
+        }
+
+        function updateInk() {
+            const inkSpan = document.getElementById('ink');
+            inkSpan.textContent = `${marker.getInk()}%`;
+        }
+        function fillMarker() {
+            marker.ink = 100;
+            updateInk();
+        }
+        updateInk();
+    </script>
+</body>
+
+</html>
